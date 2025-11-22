@@ -1,0 +1,45 @@
+body { background-color: #f8f9fa; }
+    .navbar { background-color: #343a40; }
+    .navbar a, .navbar-brand, .navbar-text { color: white !important; }
+    .sidebar {
+      width: 220px;
+      background: white;
+      border-right: 1px solid #ddd;
+      height: calc(100vh - 56px);
+      padding-top: 20px;
+    }
+    .sidebar button {
+      width: 90%;
+      margin: 5px auto;
+      display: block;
+    }
+    .content-area {
+      padding: 20px;
+      flex: 1;
+    }
+    .stat-card {
+      background: #212529;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .list-box {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+    }
+
+    .navbar a:hover {
+      color: #ffc107 !important;
+    }
+    .search-box input {
+      border-radius: 20px;
+      border: none;
+      padding: 5px 12px;
+      width: 160px;
+    }
