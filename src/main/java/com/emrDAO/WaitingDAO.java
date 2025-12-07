@@ -38,7 +38,7 @@ public class WaitingDAO {
         try {
             String sql = "SELECT w.id AS waiting_id, w.code, w.state, p.id AS patient_id, p.name, p.gender,p.birth, p.phone, w.entry_date " +
                          "FROM waiting w JOIN patient p ON w.patient_id = p.id " +
-                         "ORDER BY w.entry_date DESC";
+                         "ORDER BY w.entry_date ASC";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
 
@@ -88,6 +88,18 @@ public class WaitingDAO {
             pstmt.setString(1, id);
             pstmt.setString(2, code);
             pstmt.setString(3, patientId);
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean deleteWaiting(String waitingId) {
+        try {
+            String sql = "DELETE FROM waiting WHERE id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, waitingId);
             int result = pstmt.executeUpdate();
             return result > 0;
         } catch (Exception e) {

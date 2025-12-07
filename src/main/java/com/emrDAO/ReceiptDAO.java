@@ -23,8 +23,8 @@ public class ReceiptDAO {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/bitcare?serverTimezone=Asia/Seoul",
-                "root",
-                "비밀번호" // ← 실제 비밀번호 입력
+                "dbtest",
+                "password" // ← 실제 비밀번호 입력
             );
         } catch (Exception e) {
             e.printStackTrace();
