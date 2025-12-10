@@ -113,3 +113,17 @@ body {
     max-height: 200px; 
     overflow-y: auto;
 }
+
+.history-card-item.active .card-header,
+    .history-card-item.active .card-body,
+    .history-card-item.active .text-truncate {
+        color: #000000 !important; /* 글자색 검정 */
+    }
+    
+    /* 선택된 상태에서도 S), P)의 빨강/파랑 색상을 유지하고 싶다면 아래 코드도 추가 */
+    .history-card-item.active .text-primary {
+        color: #0d6efd !important; /* 파란색 유지 */
+    }
+    .history-card-item.active .text-danger {
+        color: #dc3545 !important; /* 빨간색 유지 */
+    }

@@ -132,6 +132,12 @@
         font-size: 0.8rem;
         background-color: #f8f9fa;
     }
+    
+    .history-card-item.active {
+        color: #000000 !important; /* 글자색 검정 */
+    }
+    
+    }
 </style>
 
 <div class="d-flex" style="width: 100vw;">
@@ -263,11 +269,17 @@
                         <div class="mb-3" style="flex: 1;">
                             <textarea name="memo" id="memo" class="form-control emr-input h-100" rows="6" placeholder="진단명, 처방 내역, 의사 소견 등을 입력하세요."></textarea>
                         </div>
-
-                        <div class="d-flex justify-content-end gap-2 mt-auto pt-3 border-top">
-                            <button type="button" class="btn btn-secondary btn-sm px-3" onclick="resetForm()">초기화</button>
-                            <button type="button" id="saveBtn" class="btn btn-primary btn-sm px-4 fw-bold">진료 완료 및 저장</button>
+                        
+                        <div class="mb-3" id="summaryContainer" style="display: none;">
+	                        <span class="emr-section-label text-success" style="border-left-color: #198754;">✨ AI 진료 요약 (Summary)</span>
+	                        <textarea id="summaryResult" class="form-control emr-input mt-1" rows="3" readonly style="background-color: #f0fdf4; color: #155724;"></textarea>
                         </div>
+	                        <div class="d-flex justify-content-end gap-2 mt-auto pt-3 border-top">
+	                        <button type="button" class="btn btn-secondary btn-sm px-3" onclick="resetForm()">초기화</button>
+	                        <button type="button" class="btn btn-info btn-sm px-3 text-white" onclick="getSummary()">⚡ AI 요약</button>
+	                        <button type="button" id="saveBtn" class="btn btn-primary btn-sm px-4 fw-bold">진료 완료 및 저장</button>
+                        </div>
+
                     </form>
                 </div>
             </div>
@@ -294,8 +306,8 @@
         $("#height").val($(element).data("height")); // 키 추가됨
 
         $("#saveBtn").text("수정 내용 저장").removeClass("btn-primary").addClass("btn-warning text-white");
-        $(".history-card-item").removeClass("bg-primary text-white bg-opacity-10 border-primary"); // 기존 선택 해제
-        $(element).addClass("bg-primary text-white bg-opacity-10 border-primary"); // 선택 효과
+        $(".history-card-item").removeClass("bg-primary bg-opacity-10 border-primary"); // 기존 선택 해제
+        $(element).addClass("bg-primary bg-opacity-10 border-primary"); // 선택 효과
     }
 
     // 초기화
@@ -306,6 +318,60 @@
         
         $("#saveBtn").text("진료 완료 및 저장").removeClass("btn-warning text-white").addClass("btn-primary");
         $(".history-card-item").removeClass("bg-primary text-white bg-opacity-10 border-primary");
+    }
+    
+ // [Doctor.jsp 수정] AI 요약 요청 함수
+    function getSummary() {
+        // 1. 유효성 검사 (입력된 내용이 너무 없으면 경고)
+        /*
+        if($("#symptom_detail").val().trim() == "" && $("#memo").val().trim() == "") {
+            alert("증상이나 진료 소견을 입력한 후 요약을 요청해주세요.");
+            return;
+        }
+        */
+
+        var $btn = $(event.target);
+        var originalText = $btn.text();
+        
+        // 2. 버튼 로딩 상태 변경
+        $btn.prop("disabled", true).text("분석 중...");
+        
+        // 3. JSP Proxy로 데이터 전송 (일반적인 form 데이터 형식)
+        $.ajax({
+            type: "POST",
+            url: "ajax/getSummary.jsp", // 새로 만든 JSP 파일 경로
+            data: {
+                "height": $("#height").val(),
+                "weight": $("#weight").val(),
+                "bp_systolic": $("#bp_systolic").val(),
+                "bp_diastolic": $("#bp_diastolic").val(),
+                "temp": $("#temp").val(),
+                "symptom_detail": $("#symptom_detail").val(),
+                "memo": $("#memo").val()
+            },
+            dataType: "json",
+            success: function(res) {
+                $("#summaryContainer").fadeIn(); // 결과창 부드럽게 표시
+                
+                // Python 서버에서 주는 키 값에 따라 수정 필요 (여기선 'summary'로 가정)
+                // 만약 Python이 {"result": "..."} 로 준다면 res.result 로 변경
+                if(res.summary) {
+                    $("#summaryResult").val(res.summary);
+                } else if(res.message) {
+                    $("#summaryResult").val("메시지: " + res.message);
+                } else {
+                    $("#summaryResult").val("결과: " + JSON.stringify(res));
+                }
+            },
+            error: function(err) {
+                console.log(err);
+                alert("AI 요약 서버 통신 실패");
+            },
+            complete: function() {
+                // 버튼 원복
+                $btn.prop("disabled", false).text(originalText);
+            }
+        });
     }
 
     $(document).ready(function() {

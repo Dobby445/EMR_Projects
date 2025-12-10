@@ -90,7 +90,7 @@
     </div>
 
     <div class="content-area">
-        <h3 class="mb-4 fw-bold"> 환자 관린 </h3>
+        <h3 class="mb-4 fw-bold"> 환자 관리 </h3>
 
         <ul class="nav nav-tabs" id="nurseTab" role="tablist">
             <li class="nav-item" role="presentation">
